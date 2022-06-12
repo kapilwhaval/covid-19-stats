@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html ng-app="covid-app" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <title>Covid 19 | Stats</title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+        crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.3/moment.min.js"></script>
+    <script src="app.js"></script>
+</head>
+
+<body>
+    <!-- Title Start -->
+    <div class="jumbotron jumbotron-fluid bg-primary py-3">
+        <div class="container">
+            <h1 class="display-4 text-white">Covid 19 Current Statistics</h1>
+            <p class="lead text-white">This app will let you know the current status of the covid 19 patients</p>
+        </div>
+    </div>
+    <!-- Title End -->
+    <!-- World Wide Start -->
+    <div ng-controller="worldwide-cases" class="jumbotron jumbotron-fluid py-3">
+        <h2 class="text-center">World Wide</h2>
+        <div class="d-flex justify-content-center">
+            <div ng-if="loading == true" class="spinner-border" role="status"></div>
+        </div>
+        <div ng-if="!loading">
+            <div class="container d-flex flex-row">
+                <div class="col-4 pr-2">
+                    <h5 class="text-center text-white py-2 rounded bg-warning">
+                        Active<br>{{numDifferentiation(worldWideData.confirmed.value)}}
+                    </h5>
+                </div>
+                <div class="col-4 px-2">
+                    <h5 class="text-center text-white py-2 rounded bg-success">
+                        Recovered<br>{{numDifferentiation(worldWideData.recovered.value)}}
+                    </h5>
+                </div>
+                <div class="col-4 pl-2">
+                    <h5 class="text-center text-white py-2 rounded bg-danger">
+                        Deaths<br>{{numDifferentiation(worldWideData.deaths.value)}}
+                    </h5>
+                </div>
+            </div>
+            <h6 class="text-center py-3">Last Updated: {{formatTime(worldWideData.lastUpdate)}}</h6>
+        </div>
+    </div>
+    <!-- World Wide End -->
+    <!-- Country Wide Start -->
+    <div ng-controller="countrywide-cases" class="container">
+        <div class="d-flex justify-content-center">
+            <div ng-if="loadingCountryData == true" class="spinner-border" role="status"></div>
+        </div>
+        <div ng-if="!loadingCountryData" class="dropdown">
+            <button class="btn btn-primary dropdown-toggle shadow-none" type="button" id="dropdownMenuButton1"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                <span ng-if="selectedCountry == null">Select Country</span>
+                <span ng-if="selectedCountry">{{selectedCountry}}</span>
+            </button>
+            <ul class="dropdown-menu" style="max-height: 300px; overflow: auto" aria-labelledby="dropdownMenuButton1">
+                <li ng-repeat="x in countries | orderBy : 'Country'" ng-click="selectCountry(x.Country)">
+                    <a class="dropdown-item" href="#">{{x.Country}}</a>
+                </li>
+            </ul>
+        </div>
+        <!-- Country Data -->
+        <div class="my-4" ng-if="loadingCountryData == false && selectedCountry != null">
+            <h2 ng-if="!error" class="text-center">{{selectedCountry}}</h2>
+            <div ng-if="!error" class="d-flex flex-row">
+                <div class="col-4 pr-2">
+                    <h5 class="text-center text-white py-2 rounded bg-warning">
+                        Active<br>{{numDifferentiation(selectedCountryData.confirmed.value)}}
+                    </h5>
+                </div>
+                <div class="col-4 px-2">
+                    <h5 class="text-center text-white py-2 rounded bg-success">
+                        Recovered<br>{{numDifferentiation(selectedCountryData.recovered.value)}}
+                    </h5>
+                </div>
+                <div class="col-4 pl-2">
+                    <h5 class="text-center text-white py-2 rounded bg-danger">
+                        Deaths<br>{{numDifferentiation(selectedCountryData.deaths.value)}}
+                    </h5>
+                </div>
+            </div>
+            <div ng-if="error" class="text-white text-center bg-danger rounded">{{error}}</div>
+            <h6 ng-if="!error" class="text-center py-3">Last Updated: {{formatTime(selectedCountryData.lastUpdate)}}</h6>
+        </div>
+        <!-- Country Data End -->
+    </div>
+    <!-- Country Wide End -->
+    <div class="d-flex flex-column justify-content-center align-items-center position-absolute bottom-0 w-100 py-4 bg-primary">
+        <div class="d-flex mb-3">
+            <a target="_blank" class="text-white mx-4" href="https://angularjs.org/">AngularJS</a>
+            <a target="_blank" class="text-white mx-4" href="https://github.com/mathdroid/covid-19-api">Mathdroid's Covid 19 API</a>
+            <a target="_blank" class="text-white mx-4" href="https://getbootstrap.com/docs/5.0/getting-started/introduction/">Bootstrap</a>
+        </div>
+        <div class="d-flex">
+            <a class="text-white" target="_blank" href="https://www.kapilwhaval.com">Kapil Whaval</a>
+            <span class="text-white">&nbsp;&nbsp;© {{currentYear}}</span>
+        </div>
+    </div>
+</body>
+
+</html>
